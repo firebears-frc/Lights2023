@@ -10,27 +10,35 @@ int Col2 = 0;    //green
 int Col3 = 0;    //blue
 
 //Bear Color
-int Col21 = 0;   //red
-int Col22 = 0;   //green
-int Col23 = 0;   //Blue
+int Col21 = 255;   //red
+int Col22 = 255;   //green
+int Col23 = 255;   //Blue
 
 //Eye Color
 int Col31 = 255;   //red
 int Col32 = 0;   //green
 int Col33 = 0;   //Blue
 
+//background color
+int Col41 = 0;   //red
+int Col42 = 0;   //green
+int Col43 = 0;   //Blue
 
 
-const int X = 123;
-
+const int X = 124;
+//x
+//y
+//red
+//green
+//blue
 
 uint8_t thing[5][X] = {   
 
-  {Pix1,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1+5,Pix1+6,Pix1+7,Pix1+8,Pix1+8,Pix1+8,Pix1+8,Pix1+8,Pix1+8,Pix1+8 ,Pix1+8 ,Pix1+7 ,Pix1+7,Pix1+6,Pix1+7,Pix1+6,Pix1+5,Pix1+5,Pix1+5  ,Pix1+5 ,Pix1+5 ,Pix1+4 ,Pix1+4 ,Pix1+3,Pix1+2,Pix1+2 ,Pix1+2 ,Pix1+2 ,Pix1+2 ,Pix1+2 ,Pix1+2 ,Pix1+1 ,Pix1+1 ,Pix1   ,Pix1-1 ,Pix1-1,Pix1-2 ,Pix1-2 ,Pix1-2 ,Pix1-3 ,Pix1-3 ,Pix1-4 ,Pix1-4 ,Pix1-5 ,Pix1-5 ,Pix1-6 ,Pix1-6 ,Pix1-6 ,Pix1-7 ,Pix1-7,Pix1-7,Pix1-7,Pix1-7,Pix1-7,Pix1-7,Pix1-7,Pix1-6,Pix1-5,Pix1-4,Pix1-3,Pix1-2,Pix1-1, Pix1  ,Pix1+1,Pix1+2,Pix1-1,Pix1-2, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1+5,Pix1-1,Pix1-2,Pix1-3,Pix1-4, Pix1+4,Pix1-3},
-  {Pix2,Pix2  ,Pix2  ,Pix2  ,Pix2  ,Pix2  ,Pix2+1,Pix2+2,Pix2+3,Pix2+4,Pix2+5,Pix2+6,Pix2+7,Pix2+9,Pix2+10,Pix2+11,Pix2+10,Pix2+9,Pix2+8,Pix2+9,Pix2+8,Pix2+9,Pix2+10,Pix2+11,Pix2+12,Pix2+13,Pix2+11,Pix2+10,Pix2+9,Pix2+9,Pix2+10,Pix2+11,Pix2+12,Pix2+13,Pix2+14,Pix2+15,Pix2+13,Pix2+12,Pix2+11,Pix2+10,Pix2+9,Pix2+11,Pix2+12,Pix2+13,Pix2+12,Pix2+11,Pix2+11,Pix2+10,Pix2+11,Pix2+12,Pix2+11,Pix2+12,Pix2+13,Pix2+10,Pix2+9,Pix2+8,Pix2+7,Pix2+6,Pix2+5,Pix2+4,Pix2+3,Pix2+2,Pix2+1,Pix2  ,Pix2  ,Pix2  ,Pix2  , Pix2+1,Pix2+1,Pix2+1,Pix2+1,Pix2+1, Pix2+2,Pix2+2,Pix2+2,Pix2+2,Pix2+2,Pix2+2,Pix2+2, Pix2+3,Pix2+3,Pix2+3,Pix2+3,Pix2+3,Pix2+3,Pix2+3,Pix2+3, Pix2+4,Pix2+4,Pix2+4,Pix2+4,Pix2+4,Pix2+4,Pix2+4,Pix2+4, Pix2+5,Pix2+5,Pix2+5,Pix2+5,Pix2+5,Pix2+5,Pix2+5,Pix2+5, Pix2+6,Pix2+6,Pix2+6,Pix2+6,Pix2+6,Pix2+6,Pix2+6,Pix2+6, Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7, Pix2+8,Pix2+8},
-  {Col1,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1   ,Col1   ,Col1   ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1  ,Col1  ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1  ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  , Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 ,Col31  ,Col21 ,Col21 ,Col31  ,Col21 ,Col21 , Col21 ,Col21 ,Col21 ,Col31  ,Col21 ,Col21 ,Col31  ,Col21 , Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 },
-  {Col2,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2   ,Col2   ,Col2   ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2  ,Col2  ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2  ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  , Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 ,Col32  ,Col22 ,Col22 ,Col32  ,Col22 ,Col22 , Col22 ,Col22 ,Col22 ,Col32  ,Col22 ,Col22 ,Col32  ,Col22 , Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 },
-  {Col3,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3   ,Col3   ,Col3   ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3  ,Col3  ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3  ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  , Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 ,Col33  ,Col23 ,Col23 ,Col33  ,Col23 ,Col23 , Col23 ,Col23 ,Col23 ,Col33  ,Col23 ,Col23 ,Col33  ,Col23 , Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 },
+  {Pix1,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1+5,Pix1+6,Pix1+7,Pix1+8,Pix1+8,Pix1+8,Pix1+8,Pix1+8,Pix1+8,Pix1+8,Pix1+8 ,Pix1+8 ,Pix1+7 ,Pix1+7,Pix1+6,Pix1+7,Pix1+6,Pix1+5,Pix1+5,Pix1+5  ,Pix1+5 ,Pix1+5 ,Pix1+4 ,Pix1+4 ,Pix1+3,Pix1+2,Pix1+2 ,Pix1+2 ,Pix1+2 ,Pix1+2 ,Pix1+2 ,Pix1+2 ,Pix1+1 ,Pix1+1 ,Pix1   ,Pix1-1 ,Pix1-1,Pix1-2 ,Pix1-2 ,Pix1-2 ,Pix1-3 ,Pix1-3 ,Pix1-4 ,Pix1-4 ,Pix1-5 ,Pix1-5 ,Pix1-6 ,Pix1-6 ,Pix1-6 ,Pix1-7 ,Pix1-7,Pix1-7,Pix1-7,Pix1-7,Pix1-7,Pix1-7,Pix1-7,Pix1-6,Pix1-5,Pix1-4,Pix1-3,Pix1-2,Pix1-1, Pix1  ,Pix1+1,Pix1+2,Pix1-1,Pix1-2, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1-1,Pix1-2,Pix1-3, Pix1  ,Pix1+1,Pix1+2,Pix1+3,Pix1+4,Pix1+5,Pix1-1,Pix1-2,Pix1-3,Pix1-4, Pix1+4,Pix1-3},
+  {Pix2,Pix2  ,Pix2  ,Pix2  ,Pix2  ,Pix2  ,Pix2+1,Pix2+2,Pix2+3,Pix2+4,Pix2+5,Pix2+6,Pix2+7,Pix2+8,Pix2+9,Pix2+10,Pix2+11,Pix2+10,Pix2+9,Pix2+8,Pix2+9,Pix2+8,Pix2+9,Pix2+10,Pix2+11,Pix2+12,Pix2+13,Pix2+11,Pix2+10,Pix2+9,Pix2+9,Pix2+10,Pix2+11,Pix2+12,Pix2+13,Pix2+14,Pix2+15,Pix2+13,Pix2+12,Pix2+11,Pix2+10,Pix2+9,Pix2+11,Pix2+12,Pix2+13,Pix2+12,Pix2+11,Pix2+11,Pix2+10,Pix2+11,Pix2+12,Pix2+11,Pix2+12,Pix2+13,Pix2+10,Pix2+9,Pix2+8,Pix2+7,Pix2+6,Pix2+5,Pix2+4,Pix2+3,Pix2+2,Pix2+1,Pix2  ,Pix2  ,Pix2  ,Pix2  , Pix2+1,Pix2+1,Pix2+1,Pix2+1,Pix2+1, Pix2+2,Pix2+2,Pix2+2,Pix2+2,Pix2+2,Pix2+2,Pix2+2, Pix2+3,Pix2+3,Pix2+3,Pix2+3,Pix2+3,Pix2+3,Pix2+3,Pix2+3, Pix2+4,Pix2+4,Pix2+4,Pix2+4,Pix2+4,Pix2+4,Pix2+4,Pix2+4, Pix2+5,Pix2+5,Pix2+5,Pix2+5,Pix2+5,Pix2+5,Pix2+5,Pix2+5, Pix2+6,Pix2+6,Pix2+6,Pix2+6,Pix2+6,Pix2+6,Pix2+6,Pix2+6, Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7,Pix2+7, Pix2+8,Pix2+8},
+  {Col1,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1   ,Col1   ,Col1   ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1  ,Col1  ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1  ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1   ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  ,Col1  , Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 ,Col31  ,Col21 ,Col21 ,Col31  ,Col21 ,Col21 , Col21 ,Col21 ,Col21 ,Col31  ,Col21 ,Col21 ,Col31  ,Col21 , Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 ,Col21 , Col21 ,Col21 },
+  {Col2,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2   ,Col2   ,Col2   ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2  ,Col2  ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2  ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2   ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  ,Col2  , Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 ,Col32  ,Col22 ,Col22 ,Col32  ,Col22 ,Col22 , Col22 ,Col22 ,Col22 ,Col32  ,Col22 ,Col22 ,Col32  ,Col22 , Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 ,Col22 , Col22 ,Col22 },
+  {Col3,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3   ,Col3   ,Col3   ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3  ,Col3  ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3  ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3   ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  ,Col3  , Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 ,Col33  ,Col23 ,Col23 ,Col33  ,Col23 ,Col23 , Col23 ,Col23 ,Col23 ,Col33  ,Col23 ,Col23 ,Col33  ,Col23 , Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 ,Col23 , Col23 ,Col23 },
 
 };
 
@@ -55,57 +63,50 @@ static uint16_t x;
 static uint16_t y;
 static uint16_t z;
 
-#define NUM_LEDS 512
-#define DATA_PIN 13
-#define BRIGHTNESS 100
 #define WIDTH 64
 #define HIGHT 16
 
-CRGB leds[NUM_LEDS];
+
 
 void setup() {
   Serial.begin(115200);
 
   matrix.addLayer(&backgroundLayer); 
   matrix.begin();
-  
-  backgroundLayer.setBrightness(255); 
-  
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-  FastLED.setBrightness(BRIGHTNESS);
 
+ for(uint8_t p = 0; p < 64; p++){ 
+    setcolor(0,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(1,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(2,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(3,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(4,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(5,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(6,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(7,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(8,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(9,p,  (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(10,p, (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(11,p, (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(12,p, (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(13,p, (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(14,p, (rgb24)CRGB(Col41,Col42,Col43));
+    setcolor(15,p, (rgb24)CRGB(Col41,Col42,Col43));
+}
+ backgroundLayer.swapBuffers(false);
+ 
 }
 
 void loop() {
 rgb24 *buffer = backgroundLayer.backBuffer();
 
-  for(uint8_t p = 0; p < 64; p++){ 
-    setcolor(0,p,  (rgb24)CRGB(255,255,255));
-    setcolor(1,p,  (rgb24)CRGB(255,255,255));
-    setcolor(2,p,  (rgb24)CRGB(255,255,255));
-    setcolor(3,p,  (rgb24)CRGB(255,255,255));
-    setcolor(4,p,  (rgb24)CRGB(255,255,255));
-    setcolor(5,p,  (rgb24)CRGB(255,255,255));
-    setcolor(6,p,  (rgb24)CRGB(255,255,255));
-    setcolor(7,p,  (rgb24)CRGB(255,255,255));
-    setcolor(8,p,  (rgb24)CRGB(255,255,255));
-    setcolor(9,p,  (rgb24)CRGB(255,255,255));
-    setcolor(10,p, (rgb24)CRGB(255,255,255));
-    setcolor(11,p, (rgb24)CRGB(255,255,255));
-    setcolor(12,p, (rgb24)CRGB(255,255,255));
-    setcolor(13,p, (rgb24)CRGB(255,255,255));
-    setcolor(14,p, (rgb24)CRGB(255,255,255));
-    setcolor(15,p, (rgb24)CRGB(255,255,255));
-}
-  backgroundLayer.swapBuffers(false);
+  
 
 
 for(uint8_t i = 0; i < X; i++){
   setcolor(thing[1][i],thing[0][i], (rgb24)CRGB(thing[2][i],thing[3][i],thing[4][i]));
 }
 
-
-backgroundLayer.swapBuffers(false);
+  backgroundLayer.swapBuffers(false);
 
 }
 
