@@ -1,0 +1,5 @@
+{
+    "board": "teensy:avr:teensy40",
+    "sketch": "Bitmaps\\Bitmaps.ino",
+    "port": "COM3"
+}
