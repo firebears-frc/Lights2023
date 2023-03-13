@@ -4,7 +4,7 @@ unsigned long currentMillis;
 const unsigned long period = 10; 
 const byte ledPin = 13;
 
-#define NUM_LEDS 81
+#define NUM_LEDS 120
 #define DATA_PIN 3
 #define CLOCK_PIN 13
 #define BRIGHTNESS 50
