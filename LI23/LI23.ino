@@ -1,19 +1,18 @@
 #include <FastLED.h>
 
-constexpr uint8_t NUM_LEDS_STRIP = 30; // 30 leds in a 0.5m strip w/ 60 leds/m
-constexpr uint8_t NUM_LEDS_RING = 24;  // 24 leds in a ring
+constexpr uint8_t NUM_LEDS_STRIP = 30;
+constexpr uint8_t NUM_LEDS_RING = 24;
+constexpr uint8_t GLOBAL_BRIGHTNESS = 63;
+constexpr uint8_t DATA_A_PIN = 3; // DIO Pins for Strip Output
+constexpr uint8_t DATA_B_PIN = 4;
+constexpr uint8_t DATA_C_PIN = 5;
+constexpr uint8_t DATA_D_PIN = 6;
 
-constexpr uint8_t DATA_A = 3; // DIO Pins for Strip Output
-constexpr uint8_t DATA_B = 4;
-constexpr uint8_t DATA_C = 5;
-constexpr uint8_t DATA_D = 6;
-
-typedef enum {
+typedef enum
+{
     CONE,
     CUBE
 } GamePiece;
-
-#define GLOBAL_BRIGHTNESS 63 // Global Brightness
 
 CRGB STRIP_A[NUM_LEDS_STRIP]; // define arays for two strips & two rings
 CRGB STRIP_B[NUM_LEDS_STRIP];
@@ -22,10 +21,10 @@ CRGB RING_B[NUM_LEDS_RING];
 
 void setup()
 {
-    FastLED.addLeds<NEOPIXEL, DATA_A>(STRIP_A, NUM_LEDS_STRIP);
-    FastLED.addLeds<NEOPIXEL, DATA_B>(STRIP_B, NUM_LEDS_STRIP);
-    FastLED.addLeds<NEOPIXEL, DATA_C>(RING_A, NUM_LEDS_RING);
-    FastLED.addLeds<NEOPIXEL, DATA_D>(RING_B, NUM_LEDS_RING);
+    FastLED.addLeds<NEOPIXEL, DATA_A_PIN>(STRIP_A, NUM_LEDS_STRIP);
+    FastLED.addLeds<NEOPIXEL, DATA_B_PIN>(STRIP_B, NUM_LEDS_STRIP);
+    FastLED.addLeds<NEOPIXEL, DATA_C_PIN>(RING_A, NUM_LEDS_RING);
+    FastLED.addLeds<NEOPIXEL, DATA_D_PIN>(RING_B, NUM_LEDS_RING);
 
     FastLED.setBrightness(GLOBAL_BRIGHTNESS);
 
@@ -115,163 +114,60 @@ void solid(CRGB color, CRGB *output)
 
 void gamePiece(GamePiece piece, CRGB *output)
 { // animation for game pieces
-    static uint8_t a = 0; 
-    static uint8_t b = 1;
-    static uint8_t c = 2;
-    static uint8_t d = 3;
-    static uint8_t e = 4;
-    static uint8_t f = 5;
-    static uint8_t g = 6;
-    static uint8_t h = 7;
-    static uint8_t i = 8;
-    static uint8_t j = 9;
-    static uint8_t k = 10;
+    static uint8_t i = 0;
 
-    if (a == (NUM_LEDS_STRIP))
+    switch (piece)
     {
-        a = 0;
-    }
-    else if (b == (NUM_LEDS_STRIP))
-    {
-        b = 0;
-    }
-    else if (c == (NUM_LEDS_STRIP))
-    {
-        c = 0;
-    }
-    else if (d == (NUM_LEDS_STRIP))
-    {
-        d = 0;
-    }
-    else if (e == (NUM_LEDS_STRIP))
-    {
-        e = 0;
-    }
-    else if (f == (NUM_LEDS_STRIP))
-    {
-        f = 0;
-    }
-    else if (g == (NUM_LEDS_STRIP))
-    {
-        g = 0;
-    }
-    else if (h == (NUM_LEDS_STRIP))
-    {
-        h = 0;
-    }
-    else if (i == (NUM_LEDS_STRIP))
-    {
-        i = 0;
-    }
-    else if (j == (NUM_LEDS_STRIP))
-    {
-        j = 0;
-    }
-    else if (k == (NUM_LEDS_STRIP))
-    {
-        k = 0;
+    case CONE:
+        // animation for cone, should be yellow ish. makes it appear as if the strips are linked on back end of robot
+        output[(i + 0) % NUM_LEDS_STRIP] = CRGB::Black;
+        output[(i + 1) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+        output[(i + 2) % NUM_LEDS_STRIP] = CRGB::Yellow;
+        output[(i + 3) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+        output[(i + 4) % NUM_LEDS_STRIP] = CRGB::Yellow;
+        output[(i + 5) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+        output[(i + 6) % NUM_LEDS_STRIP] = CRGB::Yellow;
+        output[(i + 7) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+        output[(i + 8) % NUM_LEDS_STRIP] = CRGB::Yellow;
+        output[(i + 9) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+        output[(i + 10) % NUM_LEDS_STRIP] = CRGB::Yellow;
+        break;
+    case CUBE:
+        // animation for cone, should be purple ish. makes it appear as if the strips are linked on back end of robot
+        output[(i + 0) % NUM_LEDS_STRIP] = CRGB::Black;
+        output[(i + 1) % NUM_LEDS_STRIP] = CRGB::DarkViolet;
+        output[(i + 2) % NUM_LEDS_STRIP] = CRGB::Purple;
+        output[(i + 3) % NUM_LEDS_STRIP] = CRGB::DarkViolet;
+        output[(i + 4) % NUM_LEDS_STRIP] = CRGB::Purple;
+        output[(i + 5) % NUM_LEDS_STRIP] = CRGB::DarkViolet;
+        output[(i + 6) % NUM_LEDS_STRIP] = CRGB::Purple;
+        output[(i + 7) % NUM_LEDS_STRIP] = CRGB::DarkViolet;
+        output[(i + 8) % NUM_LEDS_STRIP] = CRGB::Purple;
+        output[(i + 9) % NUM_LEDS_STRIP] = CRGB::DarkViolet;
+        output[(i + 10) % NUM_LEDS_STRIP] = CRGB::Purple;
+        break;
     }
 
-    switch (piece) {
-        case CONE:
-            // animation for cone, should be yellow ish. makes it appear as if the strips are linked on back end of robot
-            output[a++] = CRGB::Black;
-            output[b++] = CRGB::DarkOrange;
-            output[c++] = CRGB::Yellow;
-            output[d++] = CRGB::DarkOrange;
-            output[e++] = CRGB::Yellow;
-            output[f++] = CRGB::DarkOrange;
-            output[g++] = CRGB::Yellow;
-            output[h++] = CRGB::DarkOrange;
-            output[i++] = CRGB::Yellow;
-            output[j++] = CRGB::DarkOrange;
-            output[k++] = CRGB::Yellow;
-            break;
-        case CUBE:
-            // animation for cone, should be purple ish. makes it appear as if the strips are linked on back end of robot
-            output[NUM_LEDS_STRIP - a++] = CRGB::Black;
-            output[NUM_LEDS_STRIP - b++] = CRGB::DarkViolet;
-            output[NUM_LEDS_STRIP - c++] = CRGB::Purple;
-            output[NUM_LEDS_STRIP - d++] = CRGB::DarkViolet;
-            output[NUM_LEDS_STRIP - e++] = CRGB::Purple;
-            output[NUM_LEDS_STRIP - f++] = CRGB::DarkViolet;
-            output[NUM_LEDS_STRIP - g++] = CRGB::Purple;
-            output[NUM_LEDS_STRIP - h++] = CRGB::DarkViolet;
-            output[NUM_LEDS_STRIP - i++] = CRGB::Purple;
-            output[NUM_LEDS_STRIP - j++] = CRGB::DarkViolet;
-            output[NUM_LEDS_STRIP - k++] = CRGB::Purple;
-            break;
-    }
+    i++;
+    i %= NUM_LEDS_STRIP;
 }
 
 void fire(CRGB *output)
 {
-    static uint8_t a = 0;
-    static uint8_t b = 1;
-    static uint8_t c = 2;
-    static uint8_t d = 3;
-    static uint8_t e = 4;
-    static uint8_t f = 5;
-    static uint8_t g = 6;
-    static uint8_t h = 7;
-    static uint8_t i = 8;
-    static uint8_t j = 9;
-    static uint8_t k = 10;
+    static uint8_t i = 0;
 
-    if (a == (NUM_LEDS_STRIP))
-    {
-        a = 0;
-    }
-    else if (b == (NUM_LEDS_STRIP))
-    {
-        b = 0;
-    }
-    else if (c == (NUM_LEDS_STRIP))
-    {
-        c = 0;
-    }
-    else if (d == (NUM_LEDS_STRIP))
-    {
-        d = 0;
-    }
-    else if (e == (NUM_LEDS_STRIP))
-    {
-        e = 0;
-    }
-    else if (f == (NUM_LEDS_STRIP))
-    {
-        f = 0;
-    }
-    else if (g == (NUM_LEDS_STRIP))
-    {
-        g = 0;
-    }
-    else if (h == (NUM_LEDS_STRIP))
-    {
-        h = 0;
-    }
-    else if (i == (NUM_LEDS_STRIP))
-    {
-        i = 0;
-    }
-    else if (j == (NUM_LEDS_STRIP))
-    {
-        j = 0;
-    }
-    else if (k == (NUM_LEDS_STRIP))
-    {
-        k = 0;
-    }
+    output[(i + 0) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+    output[(i + 1) % NUM_LEDS_STRIP] = CRGB::Maroon;
+    output[(i + 2) % NUM_LEDS_STRIP] = CRGB::Orange;
+    output[(i + 3) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+    output[(i + 4) % NUM_LEDS_STRIP] = CRGB::Orange;
+    output[(i + 5) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+    output[(i + 6) % NUM_LEDS_STRIP] = CRGB::Orange;
+    output[(i + 7) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+    output[(i + 8) % NUM_LEDS_STRIP] = CRGB::Orange;
+    output[(i + 9) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+    output[(i + 10) % NUM_LEDS_STRIP] = CRGB::Orange;
 
-    output[a++] = CRGB::DarkOrange;
-    output[b++] = CRGB::Maroon;
-    output[c++] = CRGB::Orange;
-    output[d++] = CRGB::DarkOrange;
-    output[e++] = CRGB::Orange;
-    output[f++] = CRGB::DarkOrange;
-    output[g++] = CRGB::Orange;
-    output[h++] = CRGB::DarkOrange;
-    output[i++] = CRGB::Orange;
-    output[j++] = CRGB::DarkOrange;
-    output[k++] = CRGB::Orange;
+    i++;
+    i %= NUM_LEDS_STRIP;
 }
