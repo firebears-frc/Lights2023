@@ -63,19 +63,16 @@ void loop()
     { // state 5 Cone
         gamePiece(CONE, STRIP_A);
         gamePiece(CONE, STRIP_B);
-        delay(20);
     }
     else if (PINB == 0b01100000)
     { // state 6 Cube
         gamePiece(CUBE, STRIP_A);
         gamePiece(CUBE, STRIP_B);
-        delay(20);
     }
     else if (PINB == 0b01110000)
     { // state 7 Fire
         fire(STRIP_A);
         fire(STRIP_B);
-        delay(20);
     } /*
      else if( PINB == 0b10000000){ //state 8
 
@@ -101,6 +98,7 @@ void loop()
      else if( PINB == 0b11110000){ //state 15
 
      }*/
+    delay(20);
     FastLED.show();
 }
 
