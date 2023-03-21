@@ -14,6 +14,39 @@ typedef enum
     CUBE
 } GamePiece;
 
+typedef enum
+{
+    ZERO = 0,
+
+    DISABLED,
+    DISABLED_RED,
+    DISABLED_BLUE,
+
+    AUTO_NONE,
+    AUTO_HAS_CUBE,
+    AUTO_HAS_CONE,
+    AUTO_DOCKED,
+    AUTO_DOCKED_RED,
+    AUTO_DOCKED_BLUE,
+    AUTO_ENGAGED,
+    AUTO_ENGAGED_RED,
+    AUTO_ENGAGED_BLUE,
+
+    TELEOP_NONE,
+    TELEOP_HAS_CUBE,
+    TELEOP_HAS_CONE,
+    TELEOP_WANT_CUBE,
+    TELEOP_WANT_CONE,
+    TELEOP_DOCKED,
+    TELEOP_DOCKED_RED,
+    TELEOP_DOCKED_BLUE,
+    TELEOP_ENGAGED,
+    TELEOP_ENGAGED_RED,
+    TELEOP_ENGAGED_BLUE,
+
+    ONE
+} State;
+
 CRGB STRIP_A[NUM_LEDS_STRIP]; // define arays for two strips & two rings
 CRGB STRIP_B[NUM_LEDS_STRIP];
 CRGB RING_A[NUM_LEDS_RING];
@@ -31,73 +64,77 @@ void setup()
     DDRB = 0b00000000; // set all of port B to input
 }
 
+State getState()
+{
+    uint8_t state = PINB;
+    state &= 0xF0;
+    state >>= 3;
+    if (digitalRead(9) == HIGH)
+    {
+        state |= 0x01;
+    }
+
+    if (state >= ONE)
+    {
+        return ONE;
+    }
+
+    return (State) state;
+}
+
 void loop()
 {
-    // check state of PB4-PB7 (on MEGA 2560 Digial 10-13)
-    if (PINB == 0b00000000)
-    { // state 0 Clear
+    switch (getState())
+    {
+    case ZERO:
+    case ONE:
+    default:
         solid(CRGB::Black, STRIP_A);
         solid(CRGB::Black, STRIP_B);
-    }
-    else if (PINB == 0b00010000)
-    { // state 1 Red
+        break;
+    case DISABLED:
+    case AUTO_ENGAGED:
+    case TELEOP_ENGAGED:
+        solid(CRGB::Green, STRIP_A);
+        solid(CRGB::Green, STRIP_B);
+        break;
+    case DISABLED_RED:
+    case AUTO_ENGAGED_RED:
+    case TELEOP_ENGAGED_RED:
         solid(CRGB::Red, STRIP_A);
         solid(CRGB::Red, STRIP_B);
-    }
-    else if (PINB == 0b00100000)
-    { // state 2 Blue
+        break;
+    case DISABLED_BLUE:
+    case AUTO_ENGAGED_BLUE:
+    case TELEOP_ENGAGED_BLUE:
         solid(CRGB::Blue, STRIP_A);
         solid(CRGB::Blue, STRIP_B);
-    }
-    else if (PINB == 0b00110000)
-    { // state 3 Yellow
-        solid(CRGB::Yellow, STRIP_A);
-        solid(CRGB::Yellow, STRIP_B);
-    }
-    else if (PINB == 0b01000000)
-    { // state 4 Purple
-        solid(CRGB::Purple, STRIP_A);
-        solid(CRGB::Purple, STRIP_B);
-    }
-    else if (PINB == 0b01010000)
-    { // state 5 Cone
+        break;
+    case AUTO_HAS_CONE:
+    case TELEOP_HAS_CONE:
+    case TELEOP_WANT_CONE:
         gamePiece(CONE, STRIP_A);
         gamePiece(CONE, STRIP_B);
-    }
-    else if (PINB == 0b01100000)
-    { // state 6 Cube
+        break;
+    case AUTO_HAS_CUBE:
+    case TELEOP_HAS_CUBE:
+    case TELEOP_WANT_CUBE:
         gamePiece(CUBE, STRIP_A);
         gamePiece(CUBE, STRIP_B);
-    }
-    else if (PINB == 0b01110000)
-    { // state 7 Fire
+        break;
+    case AUTO_NONE:
+    case AUTO_DOCKED:
+    case AUTO_DOCKED_RED:
+    case AUTO_DOCKED_BLUE:
+    case TELEOP_NONE:
+    case TELEOP_DOCKED:
+    case TELEOP_DOCKED_RED:
+    case TELEOP_DOCKED_BLUE:
         fire(STRIP_A);
         fire(STRIP_B);
-    } /*
-     else if( PINB == 0b10000000){ //state 8
+        break;
+    }
 
-     }
-     else if( PINB == 0b10010000){ //state 9
-
-     }
-     else if( PINB == 0b10100000){ //state 10
-
-     }
-     else if( PINB == 0b10110000){ //state 11
-
-     }
-     else if( PINB == 0b11000000){ //state 12
-
-     }
-     else if( PINB == 0b11010000){ //state 13
-
-     }
-     else if( PINB == 0b11100000){ //state 14
-
-     }
-     else if( PINB == 0b11110000){ //state 15
-
-     }*/
     delay(20);
     FastLED.show();
 }
@@ -118,7 +155,7 @@ void gamePiece(GamePiece piece, CRGB *output)
     {
     case CONE:
         // animation for cone, should be yellow ish. makes it appear as if the strips are linked on back end of robot
-        output[(i + 0) % NUM_LEDS_STRIP] = CRGB::Black;
+        output[i % NUM_LEDS_STRIP] = CRGB::Black;
         output[(i + 1) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
         output[(i + 2) % NUM_LEDS_STRIP] = CRGB::Yellow;
         output[(i + 3) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
@@ -132,7 +169,7 @@ void gamePiece(GamePiece piece, CRGB *output)
         break;
     case CUBE:
         // animation for cone, should be purple ish. makes it appear as if the strips are linked on back end of robot
-        output[(i + 0) % NUM_LEDS_STRIP] = CRGB::Black;
+        output[i % NUM_LEDS_STRIP] = CRGB::Black;
         output[(i + 1) % NUM_LEDS_STRIP] = CRGB::DarkViolet;
         output[(i + 2) % NUM_LEDS_STRIP] = CRGB::Purple;
         output[(i + 3) % NUM_LEDS_STRIP] = CRGB::DarkViolet;
@@ -154,7 +191,7 @@ void fire(CRGB *output)
 {
     static uint8_t i = 0;
 
-    output[(i + 0) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
+    output[i % NUM_LEDS_STRIP] = CRGB::DarkOrange;
     output[(i + 1) % NUM_LEDS_STRIP] = CRGB::Maroon;
     output[(i + 2) % NUM_LEDS_STRIP] = CRGB::Orange;
     output[(i + 3) % NUM_LEDS_STRIP] = CRGB::DarkOrange;
