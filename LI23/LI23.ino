@@ -67,11 +67,11 @@ void setup()
 State getState()
 {
     uint8_t state = PINB;
-    state &= 0xF0;
+    state &= 0b11110000;
     state >>= 3;
     if (digitalRead(9) == HIGH)
     {
-        state |= 0x01;
+        state |= 0b00000001;
     }
 
     if (state >= ONE)
