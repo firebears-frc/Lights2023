@@ -30,9 +30,15 @@ uint8_t Pixel6 = 59;
 // Custom Orange (255, 15, 0)
 
 tinyNeoPixel pixels = tinyNeoPixel(NUM_LEDS, PIN_PC0, NEO_GRB + NEO_KHZ800);
+tinyNeoPixel pixels1 = tinyNeoPixel(NUM_LEDS, PIN_PC1, NEO_GRB + NEO_KHZ800);
+tinyNeoPixel pixels2 = tinyNeoPixel(NUM_LEDS, PIN_PC2, NEO_GRB + NEO_KHZ800);
+tinyNeoPixel pixels3 = tinyNeoPixel(NUM_LEDS, PIN_PC3, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   pixels.begin();
+  pixels1.begin();
+  pixels2.begin();
+  pixels3.begin();
   startMillis = millis();
 }
 
@@ -45,6 +51,9 @@ currentMillis = millis();
     
     Pixel = Pixel + 1;
     pixels.setPixelColor(Pixel , pixels.Color(255, 15, 0));
+    pixels1.setPixelColor(Pixel , pixels.Color(255, 15, 0));
+    pixels2.setPixelColor(Pixel , pixels.Color(255, 15, 0));
+    pixels3.setPixelColor(Pixel , pixels.Color(255, 15, 0));
 
     if(Pixel4 == NUM_LEDS) {
       Pixel4 = 0;
@@ -52,6 +61,9 @@ currentMillis = millis();
     
     Pixel4 = Pixel4 + 1;
     pixels.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels1.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels2.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels3.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
 
     if(Pixel2 == NUM_LEDS) {
       Pixel2 = 0;
@@ -59,29 +71,44 @@ currentMillis = millis();
     
     Pixel2 = Pixel2 + 1;
     pixels.setPixelColor(Pixel2 , pixels.Color(255, 15 , 0));
+    pixels1.setPixelColor(Pixel2 , pixels.Color(255, 15 , 0));
+    pixels2.setPixelColor(Pixel2 , pixels.Color(255, 15 , 0));
+    pixels3.setPixelColor(Pixel2 , pixels.Color(255, 15 , 0));
 
     if(Pixel5 == NUM_LEDS) {
       Pixel5 = 0;
     }
     
     Pixel5 = Pixel5 + 1;
-    pixels.setPixelColor(Pixel5 , pixels.Color(0, 0, 0));
+    pixels.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels1.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels2.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels3.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
 
     if(Pixel3 == NUM_LEDS) {
       Pixel3 = 0;
     }
     
     Pixel3 = Pixel3 + 1;
-    pixels.setPixelColor(Pixel3 , pixels.Color(255, 15, 0));
+    pixels.setPixelColor(Pixel2 , pixels.Color(255, 15 , 0));
+    pixels1.setPixelColor(Pixel2 , pixels.Color(255, 15 , 0));
+    pixels2.setPixelColor(Pixel2 , pixels.Color(255, 15 , 0));
+    pixels3.setPixelColor(Pixel2 , pixels.Color(255, 15 , 0));
 
     if(Pixel6 == NUM_LEDS) {
       Pixel6 = 0;
     }
     
     Pixel6 = Pixel6 + 1;
-    pixels.setPixelColor(Pixel6 , pixels.Color(0, 0, 0));
+    pixels.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels1.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels2.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
+    pixels3.setPixelColor(Pixel4 , pixels.Color(0, 0, 0));
 
     pixels.show();
+    pixels1.show();
+    pixels2.show();
+    pixels3.show();
     startMillis = currentMillis; 
 
   }

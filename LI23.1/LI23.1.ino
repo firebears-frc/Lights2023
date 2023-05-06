@@ -20,10 +20,45 @@ tinyNeoPixel ring_B = tinyNeoPixel(NUM_LEDS_RING, DATA_D, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // put your setup code here, to run once:
-
+  strip_A.begin();
+  strip_B.begin();
+  ring_A.begin();
+  ring_B.begin();
+  Serial.begin(112500);
+  DDRB = 0b00000000;
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  switch(PINB)
+    case 0b00000000:
+    
+    break;
 
+    case 0b00000010:
+
+    break;
+
+    case 0b00000100:
+
+    break;
+
+    case 0b00000110:
+
+    break;
+
+    case 0b00001000:
+
+    break;
+
+    case 0b00001010:
+
+    break;
+
+    case 0b00001100:
+
+    break;
+
+    case 0b00001110;
+    
 }
