@@ -1,644 +1,198 @@
 #include <FastLED.h>
 
-#define NUM_LEDS_STRIP 30 // 30 leds in a 0.5m strip w/ 60 leds/m
-#define NUM_LEDS_RING 24 // 24 leds in a ring
+constexpr uint8_t NUM_LEDS_STRIP    = 30;
+constexpr uint8_t NUM_LEDS_RING     = 24;
+constexpr uint8_t GLOBAL_BRIGHTNESS = 63;
+constexpr uint8_t DATA_A_PIN        = 3;
+constexpr uint8_t DATA_B_PIN        = 4;
+constexpr uint8_t DATA_C_PIN        = 5;
+constexpr uint8_t DATA_D_PIN        = 6;
 
-#define DATA_A 3 // DIO Pins for Strip Output
-#define DATA_B 4
-#define DATA_C 5
-#define DATA_D 6
+typedef enum {
+    CONE,
+    CUBE
+} GamePiece;
 
-#define STRIP_a 0 // marks wich strip
-#define STRIP_b 1
-#define RING_a 2
-#define RING_b 3
+typedef enum {
+    ZERO = 0,
 
-#define cBLANK 0 // output solid colors
-#define cRED 1
-#define cBLUE 2
-#define cYELLOW 3
-#define cPURPLE 4
+    DISABLED,
+    DISABLED_RED,
+    DISABLED_BLUE,
 
-#define CONE 0 // game pices
-#define CUBE 1
+    AUTO_NONE,
+    AUTO_HAS_CUBE,
+    AUTO_HAS_CONE,
+    AUTO_DOCKED,
+    AUTO_DOCKED_RED,
+    AUTO_DOCKED_BLUE,
+    AUTO_ENGAGED,
+    AUTO_ENGAGED_RED,
+    AUTO_ENGAGED_BLUE,
 
+    TELEOP_NONE,
+    TELEOP_HAS_CUBE,
+    TELEOP_HAS_CONE,
+    TELEOP_WANT_CUBE,
+    TELEOP_WANT_CONE,
+    TELEOP_DOCKED,
+    TELEOP_DOCKED_RED,
+    TELEOP_DOCKED_BLUE,
+    TELEOP_ENGAGED,
+    TELEOP_ENGAGED_RED,
+    TELEOP_ENGAGED_BLUE,
 
-#define GLOBAL_BRIGHTNESS 63 // Global Brightness
+    ONE
+} State;
 
-CRGB STRIP_A[NUM_LEDS_STRIP]; // define arays for two strips & two rings
+CRGB STRIP_A[NUM_LEDS_STRIP];
 CRGB STRIP_B[NUM_LEDS_STRIP];
 CRGB RING_A[NUM_LEDS_RING];
 CRGB RING_B[NUM_LEDS_RING];
 
-uint8_t a = 0; // vars for scrolling animations (strips)
-uint8_t b = 1;
-uint8_t c = 2;
-uint8_t d = 3;
-uint8_t e = 4;
-uint8_t f = 5;
-uint8_t g = 6;
-uint8_t h = 7;
-uint8_t i = 8;
-uint8_t j = 9;
-uint8_t k = 10;
-
-uint8_t A = 0; //vars for scoling animations (rings)
-uint8_t B = 1;
-uint8_t C = 2;
-uint8_t D = 3;
-uint8_t E = 4;
-uint8_t F = 5;
-uint8_t G = 6;
-uint8_t H = 7;
-uint8_t I = 8;
-
-uint16_t randomNum = 0; // random number for the fire
-byte fireStarter;
-#define delayTime 0
-
 void setup() {
-  FastLED.addLeds<NEOPIXEL, DATA_A>(STRIP_A, NUM_LEDS_STRIP);
-  FastLED.addLeds<NEOPIXEL, DATA_B>(STRIP_B, NUM_LEDS_STRIP);
-  FastLED.addLeds<NEOPIXEL, DATA_C>(RING_A, NUM_LEDS_RING);
-  FastLED.addLeds<NEOPIXEL, DATA_D>(RING_B, NUM_LEDS_RING);
+    FastLED.addLeds<NEOPIXEL, DATA_A_PIN>(STRIP_A, NUM_LEDS_STRIP);
+    FastLED.addLeds<NEOPIXEL, DATA_B_PIN>(STRIP_B, NUM_LEDS_STRIP);
+    FastLED.addLeds<NEOPIXEL, DATA_C_PIN>(RING_A, NUM_LEDS_RING);
+    FastLED.addLeds<NEOPIXEL, DATA_D_PIN>(RING_B, NUM_LEDS_RING);
 
-  Serial.begin(115200);
+    FastLED.setBrightness(GLOBAL_BRIGHTNESS);
 
-  FastLED.setBrightness(GLOBAL_BRIGHTNESS);
+    // Set port B to output
+    DDRB = 0b00000000;
+}
 
-  DDRB = 0b00000000; // set all of port B to input
+State getState() {
+    uint8_t state = PINB;
+    state &= 0b11110000;
+    state >>= 3;
+    if (digitalRead(9) == HIGH) {
+        state |= 0b00000001;
+    }
 
+    if (state >= ONE) {
+        return ONE;
+    }
+
+    return (State) state;
 }
 
 void loop() {
-  // check state of PB4-PB7 (on MEGA 2560 Digial 10-13)
-  if ( PINB == 0b00000000 ){     //state 0 Clear
-    solid(cBLANK, STRIP_a);
-    solid(cBLANK, STRIP_b);
-  }
-  else if( PINB == 0b00010000 ){ //state 1 Red
-    solid(cRED, STRIP_a);
-    solid(cRED, STRIP_b);  
-  }
-  else if( PINB == 0b00100000){ //state 2 Blue
-    solid(cBLUE, STRIP_a);
-    solid(cBLUE, STRIP_b);
-  }
-  else if( PINB == 0b00110000){ //state 3 Yellow
-    solid(cYELLOW, STRIP_a);
-    solid(cYELLOW, STRIP_b);
-  }
-  else if( PINB == 0b01000000){ //state 4 Purple
-    solid(cPURPLE, STRIP_a);
-    solid(cPURPLE, STRIP_b);
-  }
-  else if( PINB == 0b01010000){ //state 5 Cone
-    gamePiece(CONE, STRIP_a);
-    gamePiece(CONE, STRIP_b);
+    switch (getState()) {
+        case ZERO:
+        case ONE:
+        default:
+            solid(CRGB::Black, STRIP_A);
+            solid(CRGB::Black, STRIP_B);
+            break;
+        case DISABLED:
+        case AUTO_ENGAGED:
+        case TELEOP_ENGAGED:
+            solid(CRGB::Green, STRIP_A);
+            solid(CRGB::Green, STRIP_B);
+            break;
+        case DISABLED_RED:
+        case AUTO_ENGAGED_RED:
+        case TELEOP_ENGAGED_RED:
+            solid(CRGB::Red, STRIP_A);
+            solid(CRGB::Red, STRIP_B);
+            break;
+        case DISABLED_BLUE:
+        case AUTO_ENGAGED_BLUE:
+        case TELEOP_ENGAGED_BLUE:
+            solid(CRGB::Blue, STRIP_A);
+            solid(CRGB::Blue, STRIP_B);
+            break;
+        case AUTO_HAS_CONE:
+        case TELEOP_HAS_CONE:
+        case TELEOP_WANT_CONE:
+            gamePiece(CONE, STRIP_A);
+            gamePiece(CONE, STRIP_B);
+            break;
+        case AUTO_HAS_CUBE:
+        case TELEOP_HAS_CUBE:
+        case TELEOP_WANT_CUBE:
+            gamePiece(CUBE, STRIP_A);
+            gamePiece(CUBE, STRIP_B);
+            break;
+        case AUTO_NONE:
+        case AUTO_DOCKED:
+        case AUTO_DOCKED_RED:
+        case AUTO_DOCKED_BLUE:
+        case TELEOP_NONE:
+        case TELEOP_DOCKED:
+        case TELEOP_DOCKED_RED:
+        case TELEOP_DOCKED_BLUE:
+            fire(STRIP_A);
+            fire(STRIP_B);
+            break;
+    }
+
     delay(20);
-  }
-  else if( PINB == 0b01100000){ //state 6 Cube
-    gamePiece(CUBE, STRIP_a);
-    gamePiece(CUBE, STRIP_b);
-    delay(20);
-  }
-  else if( PINB == 0b01110000){ //state 7 Fire
-    fire(STRIP_a);
-    fire(STRIP_b);
-    delay(20);
-  }/*
-  else if( PINB == 0b10000000){ //state 8
-    
-  }
-  else if( PINB == 0b10010000){ //state 9
-    
-  }
-  else if( PINB == 0b10100000){ //state 10
-    
-  }
-  else if( PINB == 0b10110000){ //state 11
-    
-  }
-  else if( PINB == 0b11000000){ //state 12
-    
-  }
-  else if( PINB == 0b11010000){ //state 13
-    
-  }
-  else if( PINB == 0b11100000){ //state 14
-    
-  }
-  else if( PINB == 0b11110000){ //state 15
-    
-  }*/
-  FastLED.show();
-  fireStarter = PINB;
+    FastLED.show();
 }
 
- void solid(uint8_t color, uint8_t output){ // puts whole strip or ring to a solid color, curently blank, red, and blue
-  if(color == cBLANK){ // make strip blank
-      if(output == STRIP_a){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip a
-        STRIP_A[i] = CRGB::Black;
-        }
+void solid(CRGB color, CRGB *output) {
+    for (uint8_t i = 0; i < NUM_LEDS_STRIP; i++) {
+        output[i] = color;
     }
-    if(output == STRIP_b){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip b
-        STRIP_B[i] = CRGB::Black;
-      }
-    }
-    if(output == RING_a){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring a
-        RING_A[i] = CRGB::Black;
-      }
-    }
-    if(output == RING_b){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring b
-        RING_B[i] = CRGB::Black;
-      }
-    }
-  }
-  if(color == cRED){ // make strip red
-      if(output == STRIP_a){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip a
-        STRIP_A[i] = CRGB::Red;
-        }
-    }
-    if(output == STRIP_b){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip b
-        STRIP_B[i] = CRGB::Red;
-      }
-    }
-    if(output == RING_a){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring a
-        RING_A[i] = CRGB::Red;
-      }
-    }
-    if(output == RING_b){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring b
-        RING_B[i] = CRGB::Red;
-      }
-    }
-  } 
-  if(color == cBLUE){ // make strip blue
-      if(output == STRIP_a){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip a
-        STRIP_A[i] = CRGB::Blue;
-        }
-    }
-    if(output == STRIP_b){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip b
-        STRIP_B[i] = CRGB::Blue;
-      }
-    }
-    if(output == RING_a){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring a
-        RING_A[i] = CRGB::Blue;
-      }
-    }
-    if(output == RING_b){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring b
-        RING_B[i] = CRGB::Blue;
-      }
-    }
-  }
-  if(color == cYELLOW){ // make strip blank
-      if(output == STRIP_a){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip a
-        STRIP_A[i] = CRGB::Yellow;
-        }
-    }
-    if(output == STRIP_b){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip b
-        STRIP_B[i] = CRGB::Yellow;
-      }
-    }
-    if(output == RING_a){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring a
-        RING_A[i] = CRGB::Yellow;
-      }
-    }
-    if(output == RING_b){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring b
-        RING_B[i] = CRGB::Yellow;
-      }
-    }
-  }
-  if(color == cPURPLE){ // make strip blank
-      if(output == STRIP_a){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip a
-        STRIP_A[i] = CRGB::Purple;
-        }
-    }
-    if(output == STRIP_b){
-      for(uint8_t i = 0; i < NUM_LEDS_STRIP; i++){ // strip b
-        STRIP_B[i] = CRGB::Purple;
-      }
-    }
-    if(output == RING_a){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring a
-        RING_A[i] = CRGB::Purple;
-      }
-    }
-    if(output == RING_b){
-      for(uint8_t i = 0; i < NUM_LEDS_RING; i++){ // ring b
-        RING_B[i] = CRGB::Purple;
-      }
-    }
-  }
 }
 
-void gamePiece( uint8_t piece, uint8_t output){ // animation for game pices
-  
-  if(piece == CONE){ // animation for cone, should be yellow ish. makes it apear as if the strips are linked on back end of robot
-    if(a == (NUM_LEDS_STRIP)){
-        a = 0;
+void gamePiece(GamePiece piece, CRGB *output) {  // animation for game pieces
+    static uint8_t i = 0;
+
+    switch (piece) {
+        case CONE:
+            // animation for cone, should be yellow ish. makes it appear as if
+            // the strips are linked on back end of robot
+            output[i % NUM_LEDS_STRIP]        = CRGB::Black;
+            output[(i + 1) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+            output[(i + 2) % NUM_LEDS_STRIP]  = CRGB::Yellow;
+            output[(i + 3) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+            output[(i + 4) % NUM_LEDS_STRIP]  = CRGB::Yellow;
+            output[(i + 5) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+            output[(i + 6) % NUM_LEDS_STRIP]  = CRGB::Yellow;
+            output[(i + 7) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+            output[(i + 8) % NUM_LEDS_STRIP]  = CRGB::Yellow;
+            output[(i + 9) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+            output[(i + 10) % NUM_LEDS_STRIP] = CRGB::Yellow;
+            break;
+        case CUBE:
+            // animation for cone, should be purple ish. makes it appear as if
+            // the strips are linked on back end of robot
+            output[i % NUM_LEDS_STRIP]        = CRGB::Black;
+            output[(i + 1) % NUM_LEDS_STRIP]  = CRGB::DarkViolet;
+            output[(i + 2) % NUM_LEDS_STRIP]  = CRGB::Purple;
+            output[(i + 3) % NUM_LEDS_STRIP]  = CRGB::DarkViolet;
+            output[(i + 4) % NUM_LEDS_STRIP]  = CRGB::Purple;
+            output[(i + 5) % NUM_LEDS_STRIP]  = CRGB::DarkViolet;
+            output[(i + 6) % NUM_LEDS_STRIP]  = CRGB::Purple;
+            output[(i + 7) % NUM_LEDS_STRIP]  = CRGB::DarkViolet;
+            output[(i + 8) % NUM_LEDS_STRIP]  = CRGB::Purple;
+            output[(i + 9) % NUM_LEDS_STRIP]  = CRGB::DarkViolet;
+            output[(i + 10) % NUM_LEDS_STRIP] = CRGB::Purple;
+            break;
     }
-    else if(b == (NUM_LEDS_STRIP)){
-        b = 0;
-    }
-    else if(c == (NUM_LEDS_STRIP)){
-      c = 0;
-    }
-    else if(d == (NUM_LEDS_STRIP)){
-        d = 0;
-    }
-    else if(e == (NUM_LEDS_STRIP)){
-        e = 0;
-    }
-    else if(f == (NUM_LEDS_STRIP)){
-      f = 0;
-    }
-    else if(g == (NUM_LEDS_STRIP)){
-        g = 0;
-    }
-    else if(h == (NUM_LEDS_STRIP)){
-        h = 0;
-    }
-    else if(i == (NUM_LEDS_STRIP)){
-      i = 0;
-    }
-    else if(j == (NUM_LEDS_STRIP)){
-        j = 0;
-    }
-    else if(k == (NUM_LEDS_STRIP)){
-        k = 0;
-    }
-    if(output == STRIP_a){
-      STRIP_A[a] = CRGB::Black;
-      STRIP_A[b] = CRGB::DarkOrange;
-      STRIP_A[c] = CRGB::Yellow;
-      STRIP_A[d] = CRGB::DarkOrange;
-      STRIP_A[e] = CRGB::Yellow;
-      STRIP_A[f] = CRGB::DarkOrange;
-      STRIP_A[g] = CRGB::Yellow;
-      STRIP_A[h] = CRGB::DarkOrange;
-      STRIP_A[i] = CRGB::Yellow;
-      STRIP_A[j] = CRGB::DarkOrange;
-      STRIP_A[k] = CRGB::Yellow;
-    }
-    if(output == STRIP_b){
-      STRIP_B[NUM_LEDS_STRIP - a] = CRGB::Black;
-      STRIP_B[NUM_LEDS_STRIP - b] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - c] = CRGB::Yellow;
-      STRIP_B[NUM_LEDS_STRIP - d] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - e] = CRGB::Yellow;
-      STRIP_B[NUM_LEDS_STRIP - f] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - g] = CRGB::Yellow;
-      STRIP_B[NUM_LEDS_STRIP - h] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - i] = CRGB::Yellow;
-      STRIP_B[NUM_LEDS_STRIP - j] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - k] = CRGB::Yellow;
-    }
-    a++;
-    b++;
-    c++;
-    d++;
-    e++;
-    f++;
-    g++;
-    h++;
+
     i++;
-    j++;
-    k++;
-    if(A == (NUM_LEDS_STRIP)){
-        A = 0;
-    }
-    else if(B == (NUM_LEDS_STRIP)){
-        B = 0;
-    }
-    else if(C == (NUM_LEDS_STRIP)){
-      C = 0;
-    }
-    else if(D == (NUM_LEDS_STRIP)){
-        D = 0;
-    }
-    else if(E == (NUM_LEDS_STRIP)){
-        E = 0;
-    }
-    else if(F == (NUM_LEDS_STRIP)){
-      F = 0;
-    }
-    else if(G == (NUM_LEDS_STRIP)){
-        G = 0;
-    }
-    else if(H == (NUM_LEDS_STRIP)){
-        H = 0;
-    }
-    else if(I == (NUM_LEDS_STRIP)){
-      I = 0;
-    }
-    if(output == STRIP_a){
-      RING_A[A] = CRGB::Black;
-      RING_A[B] = CRGB::DarkOrange;
-      RING_A[C] = CRGB::Yellow;
-      RING_A[D] = CRGB::DarkOrange;
-      RING_A[E] = CRGB::Yellow;
-      RING_A[F] = CRGB::DarkOrange;
-      RING_A[G] = CRGB::Yellow;
-      RING_A[H] = CRGB::DarkOrange;
-      RING_A[I] = CRGB::Yellow;
-    }
-    if(output == STRIP_b){
-      RING_B[NUM_LEDS_STRIP - A] = CRGB::Black;
-      RING_B[NUM_LEDS_STRIP - B] = CRGB::DarkOrange;
-      RING_B[NUM_LEDS_STRIP - C] = CRGB::Yellow;
-      RING_B[NUM_LEDS_STRIP - D] = CRGB::DarkOrange;
-      RING_B[NUM_LEDS_STRIP - E] = CRGB::Yellow;
-      RING_B[NUM_LEDS_STRIP - F] = CRGB::DarkOrange;
-      RING_B[NUM_LEDS_STRIP - G] = CRGB::Yellow;
-      RING_B[NUM_LEDS_STRIP - H] = CRGB::DarkOrange;
-      RING_B[NUM_LEDS_STRIP - I] = CRGB::Yellow;
-    }
-    A++;
-    B++;
-    C++;
-    D++;
-    E++;
-    F++;
-    G++;
-    H++;
-    I++;
-  }
-  if(piece == CUBE){ // animation for cone, should be purple ish. makes it apear as if the strips are linked on back end of robot
-    if(a == (NUM_LEDS_STRIP)){
-        a = 0;
-    }
-    else if(b == (NUM_LEDS_STRIP)){
-        b = 0;
-    }
-    else if(c == (NUM_LEDS_STRIP)){
-      c = 0;
-    }
-    else if(d == (NUM_LEDS_STRIP)){
-       d = 0;
-    }
-    else if(e == (NUM_LEDS_STRIP)){
-        e = 0;
-    }
-    else if(f == (NUM_LEDS_STRIP)){
-      f = 0;
-    }
-    else if(g == (NUM_LEDS_STRIP)){
-        g = 0;
-    }
-    else if(h == (NUM_LEDS_STRIP)){
-        h = 0;
-    }
-    else if(i == (NUM_LEDS_STRIP)){
-      i = 0;
-    }
-    else if(j == (NUM_LEDS_STRIP)){
-        j = 0;
-    }
-    else if(k == (NUM_LEDS_STRIP)){
-        k = 0;
-    }
-    if(output == STRIP_a){
-      STRIP_A[a] = CRGB::Black;
-      STRIP_A[b] = CRGB::DarkViolet;
-      STRIP_A[c] = CRGB::Purple;
-      STRIP_A[d] = CRGB::DarkViolet;
-      STRIP_A[e] = CRGB::Purple;
-      STRIP_A[f] = CRGB::DarkViolet;
-      STRIP_A[g] = CRGB::Purple;
-      STRIP_A[h] = CRGB::DarkViolet;
-      STRIP_A[i] = CRGB::Purple;
-      STRIP_A[j] = CRGB::DarkViolet;
-      STRIP_A[k] = CRGB::Purple;
-    }
-    if(output == STRIP_b){
-      STRIP_B[NUM_LEDS_STRIP - a] = CRGB::Black;
-      STRIP_B[NUM_LEDS_STRIP - b] = CRGB::DarkViolet;
-      STRIP_B[NUM_LEDS_STRIP - c] = CRGB::Purple;
-      STRIP_B[NUM_LEDS_STRIP - d] = CRGB::DarkViolet;
-      STRIP_B[NUM_LEDS_STRIP - e] = CRGB::Purple;
-      STRIP_B[NUM_LEDS_STRIP - f] = CRGB::DarkViolet;
-      STRIP_B[NUM_LEDS_STRIP - g] = CRGB::Purple;
-      STRIP_B[NUM_LEDS_STRIP - h] = CRGB::DarkViolet;
-      STRIP_B[NUM_LEDS_STRIP - i] = CRGB::Purple;
-      STRIP_B[NUM_LEDS_STRIP - j] = CRGB::DarkViolet;
-      STRIP_B[NUM_LEDS_STRIP - k] = CRGB::Purple;
-    }
-    a++;
-    b++;
-    c++;
-    d++;
-    e++;
-    f++;
-    g++;
-    h++;
-    i++;
-    j++;
-    k++;
-    if(A == (NUM_LEDS_STRIP)){
-        A = 0;
-    }
-    else if(B == (NUM_LEDS_STRIP)){
-        B = 0;
-    }
-    else if(C == (NUM_LEDS_STRIP)){
-      C = 0;
-    }
-    else if(D == (NUM_LEDS_STRIP)){
-        D = 0;
-    }
-    else if(E == (NUM_LEDS_STRIP)){
-        E = 0;
-    }
-    else if(F == (NUM_LEDS_STRIP)){
-      F = 0;
-    }
-    else if(G == (NUM_LEDS_STRIP)){
-        G = 0;
-    }
-    else if(H == (NUM_LEDS_STRIP)){
-        H = 0;
-    }
-    else if(I == (NUM_LEDS_STRIP)){
-      I = 0;
-    }
-    if(output == STRIP_a){
-      RING_A[A] = CRGB::Black;
-      RING_A[B] = CRGB::DarkViolet;
-      RING_A[C] = CRGB::Purple;
-      RING_A[D] = CRGB::DarkViolet;
-      RING_A[E] = CRGB::Purple;
-      RING_A[F] = CRGB::DarkViolet;
-      RING_A[G] = CRGB::Purple;
-      RING_A[H] = CRGB::DarkViolet;
-      RING_A[I] = CRGB::Purple;
-    }
-    if(output == STRIP_b){
-      RING_B[NUM_LEDS_RING - A] = CRGB::Black;
-      RING_B[NUM_LEDS_RING - B] = CRGB::DarkViolet;
-      RING_B[NUM_LEDS_RING - C] = CRGB::Purple;
-      RING_B[NUM_LEDS_RING - D] = CRGB::DarkViolet;
-      RING_B[NUM_LEDS_RING - E] = CRGB::Purple;
-      RING_B[NUM_LEDS_RING - F] = CRGB::DarkViolet;
-      RING_B[NUM_LEDS_RING - G] = CRGB::Purple;
-      RING_B[NUM_LEDS_RING - H] = CRGB::DarkViolet;
-      RING_B[NUM_LEDS_RING - I] = CRGB::Purple;
-    }
-    A++;
-    B++;
-    C++;
-    D++;
-    E++;
-    F++;
-    G++;
-    H++;
-    I++;
-  }
+    i %= NUM_LEDS_STRIP;
 }
 
-void fire(uint8_t output){
-  if(a == (NUM_LEDS_STRIP)){
-        a = 0;
-    }
-    else if(b == (NUM_LEDS_STRIP)){
-        b = 0;
-    }
-    else if(c == (NUM_LEDS_STRIP)){
-      c = 0;
-    }
-    else if(d == (NUM_LEDS_STRIP)){
-        d = 0;
-    }
-    else if(e == (NUM_LEDS_STRIP)){
-        e = 0;
-    }
-    else if(f == (NUM_LEDS_STRIP)){
-      f = 0;
-    }
-    else if(g == (NUM_LEDS_STRIP)){
-        g = 0;
-    }
-    else if(h == (NUM_LEDS_STRIP)){
-        h = 0;
-    }
-    else if(i == (NUM_LEDS_STRIP)){
-      i = 0;
-    }
-    else if(j == (NUM_LEDS_STRIP)){
-        j = 0;
-    }
-    else if(k == (NUM_LEDS_STRIP)){
-        k = 0;
-    }
-    if(output == STRIP_a){
-      STRIP_A[a] = CRGB::DarkOrange;
-      STRIP_A[b] = CRGB::Maroon;
-      STRIP_A[c] = CRGB::Orange;
-      STRIP_A[d] = CRGB::DarkOrange;
-      STRIP_A[e] = CRGB::Orange;
-      STRIP_A[f] = CRGB::DarkOrange;
-      STRIP_A[g] = CRGB::Orange;
-      STRIP_A[h] = CRGB::DarkOrange;
-      STRIP_A[i] = CRGB::Orange;
-      STRIP_A[j] = CRGB::DarkOrange;
-      STRIP_A[k] = CRGB::Orange;
-    }
-    if(output == STRIP_b){
-      STRIP_B[NUM_LEDS_STRIP - a] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - b] = CRGB::Maroon;
-      STRIP_B[NUM_LEDS_STRIP - c] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - d] = CRGB::Maroon;
-      STRIP_B[NUM_LEDS_STRIP - e] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - f] = CRGB::Maroon;
-      STRIP_B[NUM_LEDS_STRIP - g] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - h] = CRGB::Maroon;
-      STRIP_B[NUM_LEDS_STRIP - i] = CRGB::DarkOrange;
-      STRIP_B[NUM_LEDS_STRIP - j] = CRGB::Maroon;
-      STRIP_B[NUM_LEDS_STRIP - k] = CRGB::DarkOrange;
-    }
-    a++;
-    b++;
-    c++;
-    d++;
-    e++;
-    f++;
-    g++;
-    h++;
+void fire(CRGB *output) {
+    static uint8_t i = 0;
+
+    output[i % NUM_LEDS_STRIP]        = CRGB::DarkOrange;
+    output[(i + 1) % NUM_LEDS_STRIP]  = CRGB::Maroon;
+    output[(i + 2) % NUM_LEDS_STRIP]  = CRGB::Orange;
+    output[(i + 3) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+    output[(i + 4) % NUM_LEDS_STRIP]  = CRGB::Orange;
+    output[(i + 5) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+    output[(i + 6) % NUM_LEDS_STRIP]  = CRGB::Orange;
+    output[(i + 7) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+    output[(i + 8) % NUM_LEDS_STRIP]  = CRGB::Orange;
+    output[(i + 9) % NUM_LEDS_STRIP]  = CRGB::DarkOrange;
+    output[(i + 10) % NUM_LEDS_STRIP] = CRGB::Orange;
+
     i++;
-    j++;
-    k++;
-    if(A == (NUM_LEDS_STRIP)){
-        A = 0;
-    }
-    else if(B == (NUM_LEDS_STRIP)){
-        B = 0;
-    }
-    else if(C == (NUM_LEDS_STRIP)){
-      C = 0;
-    }
-    else if(D == (NUM_LEDS_STRIP)){
-        D = 0;
-    }
-    else if(E == (NUM_LEDS_STRIP)){
-        E = 0;
-    }
-    else if(F == (NUM_LEDS_STRIP)){
-      F = 0;
-    }
-    else if(G == (NUM_LEDS_STRIP)){
-        G = 0;
-    }
-    else if(H == (NUM_LEDS_STRIP)){
-        H = 0;
-    }
-    else if(I == (NUM_LEDS_STRIP)){
-      I = 0;
-    }
-    if(output == STRIP_a){
-      RING_A[A] = CRGB::DarkOrange;
-      RING_A[B] = CRGB::Maroon;
-      RING_A[C] = CRGB::DarkOrange;
-      RING_A[D] = CRGB::Maroon;
-      RING_A[E] = CRGB::DarkOrange;
-      RING_A[F] = CRGB::Maroon;
-      RING_A[G] = CRGB::DarkOrange;
-      RING_A[H] = CRGB::Maroon;
-      RING_A[I] = CRGB::DarkOrange;
-    }
-    if(output == STRIP_b){
-      RING_B[NUM_LEDS_STRIP - A] = CRGB::DarkOrange;
-      RING_B[NUM_LEDS_STRIP - B] = CRGB::Maroon;
-      RING_B[NUM_LEDS_STRIP - C] = CRGB::DarkOrange;
-      RING_B[NUM_LEDS_STRIP - D] = CRGB::Maroon;
-      RING_B[NUM_LEDS_STRIP - E] = CRGB::DarkOrange;
-      RING_B[NUM_LEDS_STRIP - F] = CRGB::Maroon;
-      RING_B[NUM_LEDS_STRIP - G] = CRGB::DarkOrange;
-      RING_B[NUM_LEDS_STRIP - H] = CRGB::Maroon;
-      RING_B[NUM_LEDS_STRIP - I] = CRGB::DarkOrange;
-    }
-    A++;
-    B++;
-    C++;
-    D++;
-    E++;
-    F++;
-    G++;
-    H++;
-    I++;
-  }
+    i %= NUM_LEDS_STRIP;
+}
